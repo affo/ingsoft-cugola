@@ -10,10 +10,10 @@ riferimento.
 ### Want more
 
 Il progetto `want_more` contiene degli esempi più articolati di codice che non
-verranno svolti in classe, ma che vi sono forniti per ulteriore esercizio
+verranno svolti in classe, ma che vi sono forniti per ulteriore esercizio:
 
-    * `chess` implementa il gioco degli scacchi;
-    * `social` fornisce un'implementazione parziale di un social network.
+  * `chess` implementa il gioco degli scacchi;
+  * `social` fornisce un'implementazione parziale di un social network.
 
 ### Credits
 
