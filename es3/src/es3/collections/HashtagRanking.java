@@ -3,42 +3,79 @@ package es3.collections;
 import java.util.*;
 
 /**
- * Created by affo on 12/10/17.
+ * Created by affo on 17/10/17.
  */
 public class HashtagRanking {
-    private List<HTCounter> ranking = new LinkedList<>();
-    private Map<Hashtag, HTCounter> hashtagIndex = new HashMap<>();
+    private List<Hashtag> ranking;
+    private Map<Hashtag, Integer> scores;
 
-    // you'll see later
-    public LinkedHashMap<Hashtag, Integer> getRanking() {
-        LinkedHashMap<Hashtag, Integer> ranking = new LinkedHashMap<>();
-
-        for (HTCounter counter : this.ranking) {
-            ranking.put(counter.ht, counter.count);
-        }
-
-        return ranking;
+    public HashtagRanking() {
+        ranking = new LinkedList<>();
+        scores = new HashMap<>();
     }
 
     public void addHashtag(Hashtag ht) {
-        HTCounter c = hashtagIndex.get(ht);
-        if (c == null) {
-            // first time I see this hashtag
-            c = new HTCounter(ht);
-            hashtagIndex.put(ht, c);
-            ranking.add(c);
+        Integer score = this.scores.get(ht);
+        if (score == null) {
+            ranking.add(ht);
+            score = 1;
+        } else {
+            score++;
         }
-        c.increment();
 
-        // this is an anonymous class guys/girls
+        scores.put(ht, score);
+
+        ranking.sort(new HashtagComparator(scores));
+
+        /*
+        // Al posto di scrivere una nuova classe in un file separato
+        // per l'HashtagComparator e dover passare `scores` da costruttore,
+        // potete usare una anonymous inner class, così:
+
         ranking.sort(
-                new Comparator<HTCounter>() {
+                new Comparator<Hashtag>() {
                     @Override
-                    public int compare(HTCounter o1, HTCounter o2) {
-                        return Integer.compare(o2.count, o1.count);
+                    public int compare(Hashtag ht1, Hashtag ht2) {
+                        // `scores` è l'attributo privato di `HashtagRanking`
+                        Integer score1 = scores.get(ht1);
+                        Integer score2 = scores.get(ht2);
+                        return Integer.compare(score2, score1);
                     }
                 }
         );
+        */
+    }
+
+    public void removeHashtag(Hashtag ht) {
+        Integer score = this.scores.get(ht);
+        if (score == null) {
+            return;
+        }
+
+        score--;
+
+        scores.put(ht, score);
+
+        ranking.sort(
+                new Comparator<Hashtag>() {
+                    @Override
+                    public int compare(Hashtag ht1, Hashtag ht2) {
+                        Integer score1 = scores.get(ht1);
+                        Integer score2 = scores.get(ht2);
+                        return Integer.compare(score2, score1);
+                    }
+                }
+        );
+    }
+
+    public LinkedHashMap<Hashtag, Integer> getRanking() {
+        LinkedHashMap<Hashtag, Integer> result = new LinkedHashMap<>();
+
+        for (Hashtag ht : this.ranking) {
+            result.put(ht, scores.get(ht));
+        }
+
+        return result;
     }
 
     public Hashtag getMostPopular() {
@@ -46,37 +83,21 @@ public class HashtagRanking {
             return null;
         }
 
-        return ranking.get(0).ht;
-    }
-
-    // inner class guys/girls
-    private static class HTCounter {
-        public final Hashtag ht;
-        private int count = 0;
-
-        public HTCounter(Hashtag ht) {
-            this.ht = ht;
-        }
-
-        public void increment() {
-            count++;
-        }
-
-        public void decrement() {
-            count--;
-        }
+        return ranking.get(0);
     }
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder("RANKING\n");
-        for (HTCounter counter : this.ranking) {
+        StringBuilder result = new StringBuilder("Ranking:\n");
+
+        for (Hashtag ht : ranking) {
             result.append("\t")
-                    .append(counter.ht)
+                    .append(ht)
                     .append(": ")
-                    .append(counter.count)
+                    .append(scores.get(ht))
                     .append("\n");
         }
+
         return result.toString();
     }
 }
