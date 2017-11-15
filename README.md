@@ -17,4 +17,5 @@ verranno svolti in classe, ma che vi sono forniti per ulteriore esercizio:
 
 ### Credits
 
-Alcuni degli esempi proposti sono presi da [qui](https://github.com/bethrobson/Head-First-Design-Patterns).
+Alcuni degli esempi proposti sono presi da [qui](https://github.com/bethrobson/Head-First-Design-Patterns).  
+Ringrazio Benjamin Winterberg per la parte riguardante gli stream ([blog post](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/))
